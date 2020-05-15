@@ -36,7 +36,11 @@ static inline int locker_create(locker_t* locker)
 	// or pthread_cond_wait() may not actually release the mutex (if it had been locked multiple times). 
 	// If this happens, no other thread can satisfy the condition of the predicate. 
 #if defined(OS_LINUX)
-	pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE_NP);
+	#ifdef PTHREAD_MUTEX_RECURSIVE
+		pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE);
+	#else
+		pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE_NP);
+	#endif
 	//pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_ERRORCHECK_NP);
 #else
 	pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE);
